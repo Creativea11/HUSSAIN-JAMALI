@@ -3,23 +3,84 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hussain Jamali</title>
+  <title>Hussain Jamali - Engagement</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    /* ------------------- Global and Layout Styles ------------------- */
     body {
-    background-image: url('https://plus.unsplash.com/premium_photo-1670537037688-94a5428256b7?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZW5nYWdlbWVudCUyMHBob3Rvc3xlbnwwfHwwfHx8MA%3D%3D&fm=jpg&q=60&w=3000');
-      //background-color: #eafaf4;
+      background-color: #f7f7f7; /* Light off-white background */
       font-family: "Poppins", sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       height: 100vh;
       margin: 0;
-      padding-top: 40px;
-       background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+      overflow: hidden; 
+      position: relative; 
+    }
+
+    .card-frame {
+      background-color: #ffffff; /* Card ka andar ka rang white */
+      border: 3px solid #b8860b; /* Golden inner border */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Thoda shadow effect */
+      width: 380px; 
+      height: 600px; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 60px 20px 20px 20px;
+      box-sizing: border-box; 
+      position: relative;
+      opacity: 0; 
+      transform: scale(0.8); 
+      transition: opacity 1s ease-out, transform 1s ease-out; 
+      pointer-events: none; 
+    }
+
+    /* Outer Border/Frame Effect */
+    .card-frame::before {
+        content: '';
+        position: absolute;
+        top: -15px;
+        left: -15px;
+        right: -15px;
+        bottom: -15px;
+        border: 1px solid #c7a752; /* Lighter golden outer border */
+        z-index: 0;
+        border-radius: 5px;
+    }
+
+    /* Floral Corner Decoration (Using Unicode Emojis for simplicity) */
+    .card-frame::after {
+        content: '⚜️'; /* Fleur-de-lis (Flower/Decoration symbol) */
+        position: absolute;
+        font-size: 24px;
+        color: #b8860b;
+    }
+    .card-frame::before {
+        /* Duplicate the flower for all 4 corners */
+        content: '⚜️ ⚜️ ⚜️ ⚜️'; 
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        font-size: 24px;
+        color: #b8860b;
+    }
+    .card-frame::before > span:nth-child(2) { align-self: flex-end; }
+    .card-frame::before > span:nth-child(3) { align-self: flex-end; justify-self: flex-end; }
+
+
+    .card-frame.reveal {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all; 
     }
 
     .logo {
@@ -34,38 +95,53 @@
       font-size: 32px;
       font-weight: bold;
       margin-bottom: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      z-index: 2; 
     }
 
     h2 {
-      /*color: #333;*/
       font-size: 18px;
       margin-bottom: 30px;
+      color: #333; /* Darker color for white background */
+      text-shadow: none;
+      z-index: 2; 
     }
 
     .link-button {
-      border-radius: 1px;
+      border-radius: 10px;
       width: 80%;
       max-width: 320px;
       text-align: center;
-      background-color: #aeafb0;
+      background-color: #b8860b; /* Button ko golden color diya */
       color: white;
       text-decoration: none;
       padding: 14px 0;
-      border-radius: 10px;
       font-size: 16px;
       margin: 10px 0;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      transition: background 0.3s ease;
-      border-color: black;
-       border: 2px solid black;
-       border-style: dashed;
+      transition: all 0.3s ease;
+      border: 2px solid #a07a09; /* Solid border for elegant look */
+      opacity: 0; 
+      transform: translateY(20px); 
+      z-index: 2; 
     }
 
+    .link-button.animate {
+        opacity: 1;
+        transform: translateY(0); 
+    }
+    
     .link-button:hover {
-      background-color: #2da57e;
+      background-color: #a07a09;
+      transform: scale(1.05);
+      border-style: solid;
+    }
+    /* Buttons ko card ke andar adjust karne ke liye thodi styling */
+    .card-frame .link-button {
+        margin-top: 15px;
     }
 
     .icon {
@@ -77,33 +153,149 @@
       position: absolute;
       bottom: 20px;
       font-size: 12px;
-      color: #999;
+      color: #777;
+      text-shadow: none;
+      z-index: 1; 
+    }
+
+    /* ------------------- FIREWORK / CONFETTI BURST STYLES ------------------- */
+    .confetti {
+        position: fixed;
+        border-radius: 50%;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 1000;
+    }
+    
+    @keyframes burst-fade {
+        0% { transform: translate(0, 0); opacity: 1; }
+        100% { transform: translate(var(--x), var(--y)) rotate(720deg); opacity: 0; }
+    }
+
+    /* Media query for smaller screens */
+    @media (max-width: 480px) {
+        .card-frame {
+            width: 95vw; 
+            height: 85vh; 
+            padding: 50px 15px 15px 15px;
+        }
+        .logo {
+            width: 70px;
+            height: 70px;
+            font-size: 28px;
+        }
+        h2 {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .link-button {
+            padding: 12px 0;
+            font-size: 15px;
+        }
     }
   </style>
 </head>
 <body>
 
-  <div class="logo">L</div>
-  <h2>Hussain Jamali</h2>
+  <div class="card-frame">
+    <div class="logo">♡</div>
+    <h2 style="color: black;">Hussain Jamali</h2> <a class="link-button" href="https://maps.app.goo.gl/BcDw3gYtHfcjCsRM6" target="_blank">
+      <img class="icon" src="https://cdn-icons-png.flaticon.com/512/2991/2991231.png" alt="Google Maps Icon">
+      Location || الموقع
+    </a>
 
-  <!-- Google Maps Link -->
-  <a class="link-button" href="https://maps.app.goo.gl/BcDw3gYtHfcjCsRM6" target="_blank">
-    <img class="icon" src="https://cdn-icons-png.flaticon.com/512/2991/2991231.png" alt="Google Maps Icon">
-    Location  ||  الموقع
-  </a>
+    <a class="link-button" href="https://wa.link/n4wpwz" target="_blank">
+      <img class="icon" src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp Icon">
+      YAQOOB JAMALI || يعقوب جمالي
+    </a>
 
-  <!-- WhatsApp 1 -->
-  <a class="link-button" href="https://wa.link/n4wpwz" target="_blank">
-    <img class="icon" src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp Icon">
-    YAQOOB JAMALI || يعقوب جمالي
+    <a class="link-button" href="https://wa.link/pqqizw" target="_blank">
+      <img class="icon" src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp Icon">
+      HUSSAIN YAQOOB
+    </a>
+  </div> 
+<footer>Created By Aamir Yaqoob</footer>
   
+  <script>
+    // Random Color Generator for Firework
+    function getRandomColor() {
+      const colors = ['#FFD700', '#FF4500', '#DA70D6', '#00FFFF', '#32CD32', '#FFFFFF', '#FFA07A', '#EE82EE']; 
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
 
-  <!-- WhatsApp 3 -->
-  <a class="link-button" href="https://wa.link/pqqizw" target="_blank">
-    <img class="icon" src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp Icon">
-    HUSSAIN WHATSAPP
-  </a>
+    // 1. Firework Burst Function
+    function fireworkBurst(x, y) {
+      const particleCount = 200; 
+      
+      for (let i = 0; i < particleCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        
+        const size = Math.random() * 6 + 4;
+        confetti.style.width = `${size}px`;
+        confetti.style.height = `${size}px`;
 
-  <footer>Welcome To Hussain Jamali Engagment</footer>
+        confetti.style.left = x + 'px';
+        confetti.style.top = y + 'px';
+        confetti.style.backgroundColor = getRandomColor();
+        
+        const angle = Math.random() * 2 * Math.PI; 
+        const distance = Math.random() * 250 + 80;
+        
+        const endX = distance * Math.cos(angle);
+        const endY = distance * Math.sin(angle);
+        
+        confetti.style.setProperty('--x', `${endX}px`);
+        confetti.style.setProperty('--y', `${endY}px`);
+        
+        const animationDuration = Math.random() * 1.5 + 1.5;
+        confetti.style.animation = `burst-fade ${animationDuration}s ease-out forwards`;
+        
+        document.body.appendChild(confetti);
+
+        setTimeout(() => {
+          confetti.remove();
+        }, animationDuration * 1000);
+      }
+    }
+    
+    // 2. Firework Loop/Repeat Function
+    function startFireworksLoop() {
+        setInterval(() => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            const numBurstsPerInterval = Math.floor(Math.random() * 3) + 2; 
+            for (let i = 0; i < numBurstsPerInterval; i++) {
+                const randomX = Math.random() * width;
+                const randomY = Math.random() * height * 0.7;
+                fireworkBurst(randomX, randomY);
+            }
+        }, 1500);
+    }
+    
+    // 3. Main Animation Sequence: Frame Reveal then Buttons Reveal
+    document.addEventListener('DOMContentLoaded', () => {
+      const cardFrame = document.querySelector('.card-frame');
+      const buttons = document.querySelectorAll('.link-button');
+
+      // Step 1: Card Frame ko reveal karein
+      setTimeout(() => {
+        cardFrame.classList.add('reveal');
+      }, 500); // 0.5 seconds baad frame dikhna shuru hoga
+
+      // Step 2: Jab card frame reveal ho jaye, tab buttons ko reveal karein
+      setTimeout(() => {
+        buttons.forEach((button, index) => {
+          setTimeout(() => {
+            button.classList.add('animate');
+          }, index * 400); // Har button 400ms ke gap par aayega
+        });
+      }, 1500); // Frame ke reveal hone ke 1 second baad (total 0.5s + 1s = 1.5s) buttons start honge
+
+      // Step 3: Firework loop start karein
+      setTimeout(startFireworksLoop, 2000); 
+    });
+  </script>
 </body>
 </html>
